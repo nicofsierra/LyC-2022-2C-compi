@@ -1,0 +1,96 @@
+/*ZONA DE DECLARACION DE VARIABLES*/
+init{
+	A, B, C, D, E: Int
+	H, R: Float
+	G, F, W: String
+	variable1: Int
+}
+
+/*ASIGNACIONES*/
+A = 5
+B = -10
+/*C = 15 + ( A - B ) * 3*/
+/*D = 1 + ( A - B )*/
+E = A * 2.3 + 1
+H = 2.3
+R2 = -.4
+
+/*IF*/
+if( A < 4 & B>9 )
+{
+ 	D = 5
+}
+
+
+/*IF ELSE*/
+if(A == 4 || B!=9)
+
+{
+ 	if ( A == 4 )
+	 
+	{
+		D=5
+	}
+	
+}
+else
+{
+	if ( not A > 3 )
+	
+	{
+		D=4
+	}
+	else
+	{
+		C=3
+	}
+	
+}
+
+
+G = "HOLA"
+F = "HOLA TODO BIEN!"
+
+E = 12
+
+/*WHILE*/
+while(E > B)
+{
+	E = E - 1
+}
+
+DO variable1
+CASE variable1=101
+write("es 1012")
+CASE variable1>202
+write("es mayor a 202")
+DEFAULT write("ninguna de las anteriores")
+ENDDO
+
+DO variable1
+CASE variable1=101
+write("es 1012")
+CASE variable1>202
+write("es mayor a 202")
+ENDDO
+
+REPEAT A [write(A) write("veces")]
+
+/*ERRORES DEL LEXICO*/
+/*D := 50000*/
+/*H := 4200000000.00*/
+/*W := "012345678901234567890123435678901234567890123456789"*/
+/*W := "0123456789012345678901234356789"*/
+/*@*/
+/*FIN ERRORES LEXICO*/
+
+read(F)
+write(F)
+write("ES UN SIETE?")
+	
+		
+		
+		
+	
+	
+	
