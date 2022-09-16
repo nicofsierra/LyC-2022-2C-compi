@@ -1,10 +1,10 @@
 /*ZONA DE DECLARACION DE VARIABLES*/
-init{
+DECVAR
 	A, B, C, D, E: Int
 	H, R: Float
 	G, F, W: String
 	variable1: Int
-}
+ENDDEC
 
 /*ASIGNACIONES*/
 A = 5
@@ -16,15 +16,14 @@ H = 2.3
 R2 = -.4
 
 /*IF*/
-if( A < 4 & B>9 )
+if( A < 4 & B > 9 )
 {
  	D = 5
 }
 
 
 /*IF ELSE*/
-if(A == 4 || B!=9)
-
+if(A == 4 || B != 9)
 {
  	if ( A == 4 )
 	 
@@ -60,7 +59,7 @@ while(E > B)
 }
 
 DO variable1
-CASE variable1=101
+CASE variable1==101
 write("es 1012")
 CASE variable1>202
 write("es mayor a 202")
@@ -68,7 +67,7 @@ DEFAULT write("ninguna de las anteriores")
 ENDDO
 
 DO variable1
-CASE variable1=101
+CASE variable1==101
 write("es 1012")
 CASE variable1>202
 write("es mayor a 202")

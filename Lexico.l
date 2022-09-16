@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include "y.tab.h"
+#include "y.tab.h"
 
-/*struct struct_tablaSimbolos{
+struct struct_tablaSimbolos{
 	char nombre[100];
 	char tipo[100];
 	char valor[50];
@@ -19,16 +19,16 @@ int puntero_array = 0;
 char* str_cpy(char* destino, const char* origen);
 int str_cmp(const char * str1, const char * str2);
 
-struct struct_tablaSimbolos tablaSimbolos[1000];*/
+struct struct_tablaSimbolos tablaSimbolos[1000];
 
 FILE  *yyin;
-int yylval;
+//int yylval;
 char *yyltext;
 
 int yyerror(void);
-/*int eval_int( char *n );
+int eval_int( char *n );
 int eval_float( char *n );
-int eval_string( char *s );*/
+int eval_string( char *s );
 
 
 %}
@@ -65,13 +65,13 @@ PARC			")"
 PUNTO			"."
 AND 			"&"
 OR				"||"
+NOT				"NOT"|"not"
 CO_IGUAL		"=="
 CO_DIST			"!="
 CO_MENI			"<="
 CO_MEN			"<"
 CO_MAYI			">="
 CO_MAY			">"
-INIT			"init"
 INT				"Int"
 FLOAT			"Float"
 STRING			"String"
@@ -85,56 +85,63 @@ CASE			"CASE"
 DEFAULT			"DEFAULT"
 ENDDO			"ENDDO"
 REPEAT			"REPEAT"
+DECVAR			"DECVAR"
+ENDDEC			"ENDDEC"
 
 %%
 
-{CORA}          {printf("\nCorAbre: %s", yytext);}/*return CORA;}*/
-{CORC}			{printf("\nCorCierra: %s", yytext);}/*return CORC;}*/
-
-{INIT}			{printf("\nP_Reservada_INIT: %s", yytext);}/*return INIT; }	*/
-{INT}			{printf("\nP_Reservada_INT: %s", yytext);}/*return INT; }	*/											
-{FLOAT}			{printf("\nP_Reservada_FLOAT: %s", yytext);}/*return FLOAT;}*/
-{STRING}		{printf("\nP_Reservada_STRING: %s", yytext);}/*return STRING;}*/
-{IF}			{printf("\nP_Reservada_IF: %s", yytext);}/*return IF;}*/
-{ELSE}			{printf("\nP_Reservada_ELSE: %s", yytext);}/*return ELSE;}*/
-{WHILE}			{printf("\nP_Reservada_WHILE: %s", yytext);}/*return WHILE;}*/
-{READ}			{printf("\nP_Reservada_READ: %s", yytext);}/*return READ;}*/
-{WRITE}			{printf("\nP_Reservada_WRITE: %s", yytext);}/*return WRITE;}*/
-{DO}			{printf("\nP_Reservada_DO: %s", yytext);}/*return DO;}*/
-{CASE}			{printf("\nP_Reservada_CASE: %s", yytext);}/*return CASE;}	*/
-{DEFAULT}		{printf("\nP_Reservada_DEFAULT: %s", yytext);}/*return DEFAULT;}*/
-{ENDDO}			{printf("\nP_Reservada_ENDDO: %s", yytext);}/*return ENDDO;}*/
-{REPEAT}		{printf("\nP_Reservada_REPEAT: %s", yytext);}/*return REPEAT;}*/
 
 
 
-{CTE_E}			{printf("\nConstEntera: %s", yytext); }/*guardar_TS("CTE_E", yytext); eval_int(yytext);} return CTE_E;}*/ 
-{CTE_R}			{printf("\nConstReal: %s", yytext); }/*guardar_TS("CTE_R", yytext); eval_float(yytext);} return CTE_R;} */
-{ID}			{printf("\nIdentificador: %s", yytext); }/*guardar_TS("ID", yytext);} return ID;}*/
-{CTE_S} 		{printf("\nConstString: %s", yytext); }/*guardar_TS("CTE_S", yytext); eval_string(yytext);} return CTE_S;} */
+{INT}			{printf("\nP_Reservada_INT: %s", yytext);return INT; }												
+{FLOAT}			{printf("\nP_Reservada_FLOAT: %s", yytext);return FLOAT;}
+{STRING}		{printf("\nP_Reservada_STRING: %s", yytext);return STRING;}
+{IF}			{printf("\nP_Reservada_IF: %s", yytext);return IF;}
+{ELSE}			{printf("\nP_Reservada_ELSE: %s", yytext);return ELSE;}
+{WHILE}			{printf("\nP_Reservada_WHILE: %s", yytext);return WHILE;}
+{READ}			{printf("\nP_Reservada_READ: %s", yytext);return READ;}
+{WRITE}			{printf("\nP_Reservada_WRITE: %s", yytext);return WRITE;}
+{DO}			{printf("\nP_Reservada_DO: %s", yytext);return DO;}
+{CASE}			{printf("\nP_Reservada_CASE: %s", yytext);return CASE;}	
+{DEFAULT}		{printf("\nP_Reservada_DEFAULT: %s", yytext);return DEFAULT;}
+{ENDDO}			{printf("\nP_Reservada_ENDDO: %s", yytext);return ENDDO;}
+{REPEAT}		{printf("\nP_Reservada_REPEAT: %s", yytext);return REPEAT;}
+{DECVAR}			{printf("\nP_Reservada_DECVAR: %s", yytext);return DECVAR;}
+{ENDDEC}		{printf("\nP_Reservada_ENDDEC: %s", yytext);return ENDDEC;}
+
+
+{CTE_E}			{printf("\nConstEntera: %s", yytext); guardar_TS("CTE_E", yytext); eval_int(yytext); return CTE_E;} 
+{CTE_R}			{printf("\nConstReal: %s", yytext); guardar_TS("CTE_R", yytext); eval_float(yytext); return CTE_R;} 
+
+{CTE_S} 		{printf("\nConstString: %s", yytext); guardar_TS("CTE_S", yytext); eval_string(yytext); return CTE_S;} 
 {COMENTARIO}
-{DP}			{printf("\nDosPuntos: %s", yytext);}/*return DP;}*/
-{PC}			{printf("\nPuntoComa: %s", yytext);}/*return PC;}*/
-{OP_SUM}		{printf("\nSuma: %s", yytext);}/*return OP_SUM;}*/
-{OP_ASIG}		{printf("\nAsignacion: %s", yytext);}/*return OP_ASIG;}*/
-{OP_MUL}		{printf("\nMultiplicacion: %s", yytext);}/*return OP_MUL;}*/
-{OP_RES}		{printf("\nResta: %s", yytext);}/*return OP_RES;}*/
-{OP_DIV}		{printf("\nDivision: %s", yytext);}/*return OP_DIV;}*/
-{COMA}			{printf("\nComa: %s", yytext);}/*return COMA;}*/
-{LA}            {printf("\nLlAbre: %s", yytext);}/*return LA;}*/
-{LC}			{printf("\nLlCierra: %s", yytext);}/*return LC;}*/
-{PARA}			{printf("\nParAbre: %s", yytext);}/*return PARA;}*/
-{PARC}			{printf("\nParCierra: %s", yytext);}/*return PARC;}*/
-{PUNTO}			{printf("\nPunto: %s", yytext);}/*return PUNTO;}*/
-{AND}			{printf("\nAnd: %s", yytext);}/*return AND;}*/
-{OR}			{printf("\nOr: %s", yytext);}/*return OR;}*/
-{CO_IGUAL}		{printf("\nIgual: %s", yytext);}/*return CO_IGUAL;}*/
-{CO_DIST}		{printf("\nNoIgual: %s", yytext);}/*return CO_DIST;}*/
-{CO_MENI}		{printf("\nMenIgual: %s", yytext);}/*return CO_MENI;}*/
-{CO_MEN}		{printf("\nMenor: %s", yytext);}/*return CO_MEN;}*/
-{CO_MAYI}		{printf("\nMayIgual: %s", yytext);}/*return CO_MAYI;}*/
-{CO_MAY}		{printf("\nMayor: %s", yytext);}/*return CO_MAY;}*/
+{DP}			{printf("\nDosPuntos: %s", yytext);return DP;}
+{PC}			{printf("\nPuntoComa: %s", yytext);return PC;}
+{OP_SUM}		{printf("\nSuma: %s", yytext);return OP_SUM;}
+{OP_ASIG}		{printf("\nAsignacion: %s", yytext);return OP_ASIG;}
+{OP_MUL}		{printf("\nMultiplicacion: %s", yytext);return OP_MUL;}
+{OP_RES}		{printf("\nResta: %s", yytext);return OP_RES;}
+{OP_DIV}		{printf("\nDivision: %s", yytext);return OP_DIV;}
+{COMA}			{printf("\nComa: %s", yytext);return COMA;}
+{LA}            {printf("\nLlAbre: %s", yytext);return LA;}
+{LC}			{printf("\nLlCierra: %s", yytext);return LC;}
+{PARA}			{printf("\nParAbre: %s", yytext);return PARA;}
+{PARC}			{printf("\nParCierra: %s", yytext);return PARC;}
+{PUNTO}			{printf("\nPunto: %s", yytext);return PUNTO;}
+{AND}			{printf("\nAnd: %s", yytext);return AND;}
+{OR}			{printf("\nOr: %s", yytext);return OR;}
+{NOT}			{printf("\nNOT: %s", yytext);return NOT;}
+{CO_IGUAL}		{printf("\nIgual: %s", yytext);return CO_IGUAL;}
+{CO_DIST}		{printf("\nNoIgual: %s", yytext);return CO_DIST;}
+{CO_MENI}		{printf("\nMenIgual: %s", yytext);return CO_MENI;}
+{CO_MEN}		{printf("\nMenor: %s", yytext);return CO_MEN;}
+{CO_MAYI}		{printf("\nMayIgual: %s", yytext);return CO_MAYI;}
+{CO_MAY}		{printf("\nMayor: %s", yytext);return CO_MAY;}
 
+{CORA}          {printf("\nCorAbre: %s", yytext);return CORA;}
+{CORC}			{printf("\nCorCierra: %s", yytext);return CORC;}
+
+{ID}			{printf("\nIdentificador: %s", yytext); guardar_TS("ID", yytext); return ID;}
 
 "\n"      		
 "\t"
@@ -144,9 +151,11 @@ REPEAT			"REPEAT"
 "@"			 { printf( "\nERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
 .			 { printf( "\nERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
 
+
+
 %%
 
-int main(int argc,char *argv[])
+/*int main(int argc,char *argv[])
 {
 	
 	if ((yyin = fopen(argv[1], "r")) == NULL)
@@ -160,8 +169,8 @@ int main(int argc,char *argv[])
 	
 	fclose(yyin);
 
-}
-/*
+}*/
+
 int eval_int( char* n ){
 	int entero = atoi(n);
 	if( entero  < -65535 || entero > 65535 ){
@@ -279,4 +288,4 @@ int contarChar( char* a ){
 			cont++;
 	}
 	return cont;
-}*/
+}

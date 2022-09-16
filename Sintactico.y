@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
-#include "arbol.h"
 //#include "ts.h"
 
 int yystopparser=0;
@@ -61,36 +60,41 @@ char *buffer;
 %token STRING
 %token READ
 %token WRITE
-%token AVG
-%token INLIST
+%token NOT
+%token DO
+%token CASE
+%token ENDDO
+%token DEFAULT
+%token REPEAT
 
 %%
 start:
-		programa { Stp = Pp; exportar(Stp); }
+		programa
 ;
 programa:
-		sentencia {printf(" Sentencia es Programa\n"); Pp = crearNodo( ";" , Pp, Sp); } 
-		| programa sentencia {printf( " Programa y Sentencia es Programa\n"); Pp = crearNodo( ";" , Pp, Sp); }
+		sentencia {printf(" Sentencia es Programa\n"); } 
+		| programa sentencia {printf( " Programa y Sentencia es Programa\n");}
 		;
 		
 sentencia:
-		asignacion	{ printf(" Asignacion es Sentencia\n");  Sp = Ap; /*exportar( Sp ); */}
+		asignacion	{ printf(" Asignacion es Sentencia\n");}
 		| iteracion { printf(" Iteracion es Sentencia\n"); }
 		| seleccion { printf(" Seleccion es Sentencia\n"); }
-		| zonadec { printf(" Zona Declaracion es Sentencia\n"); Sp = Zp; /*exportar( Sp );*/ }
-		| read { printf("Read es Sentencia\n"); Sp = Rp; exportar( Sp ); }
-		| write { printf("Write es Sentencia\n"); Sp = Wp; exportar( Sp ); }
+		| zonadec { printf(" Zona Declaracion es Sentencia\n"); }
+		| read { printf("Read es Sentencia\n"); }
+		| write { printf("Write es Sentencia\n"); }
+		| repeat { printf("Repeat es Sentencia\n"); }
+		| do { printf("Do es Sentencia\n"); }
 		;
 
 asignacion:
-		ID OP_ASIG expresion {printf(" ID := Expresion es Asignacion\n");  Ap = crearNodo(":=" , crearHoja("ID") , Ep); }
-		| ID OP_ASIG constante_string {printf(" ID := Constante String es Asignacion\n"); Ap = crearNodo(":=",crearHoja("ID"),CSp);}
-		| ID OP_ASIG promedio {printf(" ID := AVG es Asignacion\n");}
+		ID OP_ASIG expresion {printf(" ID := Expresion es Asignacion\n"); }
+		| ID OP_ASIG constante_string {printf(" ID := Constante String es Asignacion\n"); }
 		;
 
 seleccion:
-		IF PARA condicion PARC THEN LA programa LC { _THEN = Pp; } ELSE LA programa LC {_IF = crearNodo("C",_THEN,Pp);  selp = crearNodo("IF",Condp,_IF); } ENDIF{printf(" IF (Condicion) THEN {Programa} ELSE {Programa} ENDIF Es Seleccion\n"); }
-		| IF PARA condicion PARC THEN LA programa LC { _THEN = Pp; } ENDIF {printf(" IF (Condicion) THEN {Programa} ENDIF es Seleccion\n"); }
+		IF PARA condicion PARC  LA programa LC ELSE LA programa LC {printf(" IF (Condicion)  {Programa} ELSE {Programa}  Es Seleccion\n"); }
+		| IF PARA condicion PARC  LA programa LC  {printf(" IF (Condicion)  {Programa}  es Seleccion\n"); }
 		;
 
 iteracion:
@@ -98,103 +102,110 @@ iteracion:
 		;
 
 condicion:
-		  condicion AND comparacion {printf(" Condicion AND Comparacion es Condicion\n"); Condp = crearNodo("AND",Condp,Compp); }
-		| condicion OR comparacion {printf(" Condicion OR Comparacion es Condicion\n"); Condp = crearNodo("OR",Condp,Compp); }
-		| inlist {printf(" INLIST es Condicion\n"); }
-		| comparacion {printf(" Comparacion es Condicion\n"); Condp = Compp;}
+		  condicion AND comparacion {printf(" Condicion AND Comparacion es Condicion\n"); }
+		| condicion OR comparacion {printf(" Condicion OR Comparacion es Condicion\n"); }
+		| NOT condicion{printf(" NOT Condicion es Condicion\n"); }
+		| comparacion {printf(" Comparacion es Condicion\n"); }
 		;
 		
 comparacion:
-		expresion comparador expresion {printf(" Expresion es Comparador y Expresion\n"); Compp = crearNodo( OPCompp->dato , Ep , Ep ); }
+		expresion comparador expresion {printf(" Expresion es Comparador y Expresion\n"); }
 		;
 		
 comparador:
-		CO_IGUAL {printf(" == es Comparador\n"); OPCompp = crearHoja("==");}
-		| CO_DIST {printf(" != es Comparador\n"); OPCompp = crearHoja("!=");}
-		| CO_MENI {printf(" <= es Comparador\n"); OPCompp = crearHoja("<=");}
-		| CO_MEN {printf(" < es Comparador\n"); OPCompp = crearHoja("<");}
-		| CO_MAYI {printf(" >= es Comparador\n"); OPCompp = crearHoja(">=");}
-		| CO_MAY {printf(" > es Comparador\n"); OPCompp = crearHoja(">");}
+		CO_IGUAL {printf(" == es Comparador\n"); }
+		| CO_DIST {printf(" != es Comparador\n"); }
+		| CO_MENI {printf(" <= es Comparador\n"); }
+		| CO_MEN {printf(" < es Comparador\n"); }
+		| CO_MAYI {printf(" >= es Comparador\n"); }
+		| CO_MAY {printf(" > es Comparador\n"); }
 		;
 
 expresion:
-		expresion OP_SUM termino {printf(" Expresion + Termino es Expresion\n"); Ep = crearNodo("+",Ep,Tp);}
-		| expresion OP_RES termino {printf(" Expresion - Termino es Expresion\n");  Ep = crearNodo("-",Ep,Tp); }
-		| termino {printf(" Termino es Expresion\n");  Ep = Tp; } 
+		expresion OP_SUM termino {printf(" Expresion + Termino es Expresion\n"); }
+		| expresion OP_RES termino {printf(" Expresion - Termino es Expresion\n"); }
+		| termino {printf(" Termino es Expresion\n"); } 
 		;
 		
 termino:
-		termino OP_MUL factor {printf(" Termino * Factor es Termino\n"); Tp = crearNodo("*",Tp,Fp); }
-		| termino OP_DIV factor {printf(" Termino / Factor es Termino\n");  Tp = crearNodo("/",Tp,Fp); }
-		| factor {printf(" Factor es Termino\n");  Tp = Fp; }
+		termino OP_MUL factor {printf(" Termino * Factor es Termino\n"); }
+		| termino OP_DIV factor {printf(" Termino / Factor es Termino\n"); }
+		| factor {printf(" Factor es Termino\n"); }
 		;
 		
 factor:
-		PARA  expresion PARC {printf(" ( Expresion ) es Factor\n"); Fp = Ep; }
-		| ID {printf(" ID es Factor\n"); Fp = crearHoja("ID"); }
-		| CTE_E {printf(" CTE_E es Factor\n"); Fp = crearHoja("CTE_E");}
-		| CTE_R {printf(" CTE_R es Factor\n"); Fp = crearHoja("CTE_R");}
-		| promedio {printf(" Promedio es Factor\n"); }
+		PARA  expresion PARC {printf(" ( Expresion ) es Factor\n"); }
+		| ID {printf(" ID es Factor\n"); }
+		| CTE_E {printf(" CTE_E es Factor\n"); }
+		| CTE_R {printf(" CTE_R es Factor\n"); }
 		;
 		
 zonadec:
-		DECVAR  declaracion {printf (" DECVAR Declaracion es Zonadec\n"); Zp = Dp; }
-		| declaracion {printf (" Declaracion es Zonadec\n"); Zp = Dp; }
-		| declaracion {Zp = Dp; } ENDDEC {printf (" Declaracion ENDDEC es Zonadec\n"); }
+		DECVAR  declaracion {printf (" DECVAR Declaracion es Zonadec\n"); }
+		| declaracion {printf (" Declaracion es Zonadec\n"); }
+		| declaracion ENDDEC {printf (" Declaracion ENDDEC es Zonadec\n"); }
 		;
 		
 declaracion:
-		lista_dec DP tipo {printf(" Lista_Declaracion : Tipo es Declaracion\n"); Dp = crearNodo(":",LDp,TPp ); }
+		lista_dec DP tipo {printf(" Lista_Declaracion : Tipo es Declaracion\n"); }
 		;
 
 lista_dec:
-		lista_dec COMA variable {printf(" Lista_Declaracion , Variable es Lista_Declaracion\n"); LDp = crearNodo(",",LDp,Vp); }
-		| variable {printf(" Variable es Lista_Declaracion\n"); LDp = Vp ; }
+		lista_dec COMA variable {printf(" Lista_Declaracion , Variable es Lista_Declaracion\n"); }
+		| variable {printf(" Variable es Lista_Declaracion\n"); }
 		;
 		
 variable:
-		ID { printf(" ID es Variable\n"); printf("%s",$$); Vp = crearHoja($$);} 
+		ID { printf(" ID es Variable\n"); } 
 		;
 		
 tipo:
-		FLOAT {printf (" FLOAT es Tipo\n"); TPp = crearHoja("FLOAT");} 
-		| INT {printf (" INT es Tipo\n"); TPp = crearHoja("INT");}
-		| STRING {printf (" STRING es Tipo\n"); TPp = crearHoja("STRING");}
+		FLOAT {printf (" FLOAT es Tipo\n"); } 
+		| INT {printf (" INT es Tipo\n"); }
+		| STRING {printf (" STRING es Tipo\n"); }
 		;
 		
 constante_string:
-		CTE_S {printf (" CTE_S es Constante String\n"); CSp = crearHoja("CTE_S");}
-		;
-
-promedio: 
-		AVG PARA CORA lista_avg CORC PARC {printf("AVG ( [Lista_Avg] es AVG )\n");}
-		;
-lista_avg:
-		lista_avg COMA expresion {printf("Lista_Avg , Expresion es Lista_Avg\n");}
-		| expresion {printf("Expresion es Lista_Avg\n");}
-		;
-		
-inlist:
-		INLIST PARA ID PC CORA lista_inlist CORC PARC { printf( "INLIST ( id , [lista_inlist] ) es INLIST\n"); }
-		;
-
-lista_inlist:
-		lista_inlist PC expresion { printf( "Lista_Inlist ; Expresion es Lista_Inlist\n"); }
-		| expresion
+		CTE_S {printf (" CTE_S es Constante String\n"); }
 		;
 		
 read:
-		READ CTE_S { printf("READ CTE_S es Read\n"); Rp = crearHoja("CTE_S");}
-		| READ CTE_E {printf(" READ CTE_E es Read\n"); Rp = crearHoja("CTE_E");}
-		| READ ID {printf(" READ ID es Read\n"); Rp = crearHoja("ID");}
-		| READ CTE_R {printf(" READ CTE_R es Read\n"); Rp = crearHoja("CTE_R"); }
+		READ PARA CTE_S PARC { printf("READ CTE_S es Read\n"); }
+		| READ PARA CTE_E PARC {printf(" READ CTE_E es Read\n"); }
+		| READ PARA ID PARC {printf(" READ ID es Read\n"); }
+		| READ PARA CTE_R PARC {printf(" READ CTE_R es Read\n"); }
 		;
 write:
-		WRITE CTE_S { printf("WRITE CTE_S es Write\n"); Wp = crearHoja("CTE_S");}
-		| WRITE CTE_E {printf(" WRITE CTE_E es Write\n"); Wp = crearHoja("CTE_E");}
-		| WRITE ID {printf(" WRITE ID es Write\n"); Wp = crearHoja("ID");}
-		| WRITE CTE_R {printf(" WRITE CTE_R es Write\n"); Wp = crearHoja("CTE_R");}
+		WRITE PARA CTE_S PARC { printf("WRITE CTE_S es Write\n"); }
+		| WRITE PARA CTE_E PARC {printf(" WRITE CTE_E es Write\n"); }
+		| WRITE PARA ID PARC {printf(" WRITE ID es Write\n"); }
+		| WRITE PARA CTE_R PARC {printf(" WRITE CTE_R es Write\n"); }
 		;
+do:
+	DO ID dolist ENDDO { printf("DO ID dolist ENDDO es DO\n"); }
+	;
+dolist:
+	case { printf("case es Dolist\n"); }
+	|dolist default { printf("dolist default es Dolist\n"); }
+	|dolist case { printf("dolist case es Dolist\n"); }
+	;
+	
+case:
+	CASE comparacion { printf(" CASE comparacion es case\n"); }
+	|CASE comparacion sentencia { printf(" CASE comparacion sentencia es case\n"); }
+	|CASE comparacion LA programa LC { printf(" CASE comparacion LA Programa LC es case\n"); }
+	;
+default:
+	DEFAULT{ printf(" DEFAULT es default\n"); }
+	|DEFAULT sentencia { printf(" DEFAULT sentencia es default\n"); }
+	|DEFAULT LA programa LC { printf(" DEFAULT LA programa LC es default\n"); }
+	;
+repeat:
+	REPEAT ID CORA programa CORC { printf(" REPEAT ID CORA sentencia CORC es repeat\n"); }
+	|REPEAT CTE_E CORA programa CORC { printf(" REPEAT CTE_E CORA sentencia CORC es repeat\n"); }
+	;
+
+
 %%
 
 
