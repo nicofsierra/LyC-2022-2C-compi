@@ -1,10 +1,11 @@
 /*ZONA DE DECLARACION DE VARIABLES*/
-DECVAR
+init
+{
 	A, B, C, D, E: Int
 	H, R: Float
 	G, F, W: String
 	variable1: Int
-ENDDEC
+}
 
 /*ASIGNACIONES*/
 A = 5
@@ -73,7 +74,7 @@ CASE variable1>202
 write("es mayor a 202")
 ENDDO
 
-REPEAT A [write(A) write("veces")]
+REPEAT 9 [read(C) write(C)]
 
 /*ERRORES DEL LEXICO*/
 /*D := 50000*/

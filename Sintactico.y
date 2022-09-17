@@ -53,8 +53,7 @@ char *buffer;
 %token PC				
 %token COMA
 %token PUNTO
-%token DECVAR
-%token ENDDEC
+%token INIT
 %token INT
 %token FLOAT
 %token STRING
@@ -93,7 +92,7 @@ asignacion:
 		;
 
 seleccion:
-		IF PARA condicion PARC  LA programa LC ELSE LA programa LC {printf(" IF (Condicion)  {Programa} ELSE {Programa}  Es Seleccion\n"); }
+		IF PARA condicion PARC LA programa LC ELSE LA programa LC {printf(" IF (Condicion)  {Programa} ELSE {Programa}  Es Seleccion\n"); }
 		| IF PARA condicion PARC  LA programa LC  {printf(" IF (Condicion)  {Programa}  es Seleccion\n"); }
 		;
 
@@ -103,13 +102,13 @@ iteracion:
 
 condicion:
 		  condicion AND comparacion {printf(" Condicion AND Comparacion es Condicion\n"); }
-		| condicion OR comparacion {printf(" Condicion OR Comparacion es Condicion\n"); }
-		| NOT condicion{printf(" NOT Condicion es Condicion\n"); }
+		| condicion OR comparacion {printf(" Condicion OR Comparacion es Condicion\n");} 
 		| comparacion {printf(" Comparacion es Condicion\n"); }
 		;
 		
 comparacion:
 		expresion comparador expresion {printf(" Expresion es Comparador y Expresion\n"); }
+		| NOT expresion comparador expresion {printf(" NOT Expresion es Comparador y Expresion\n"); }
 		;
 		
 comparador:
@@ -141,9 +140,9 @@ factor:
 		;
 		
 zonadec:
-		DECVAR  declaracion {printf (" DECVAR Declaracion es Zonadec\n"); }
+		INIT LA declaracion {printf ("INIT { Declaracion es Zonadec\n"); }
 		| declaracion {printf (" Declaracion es Zonadec\n"); }
-		| declaracion ENDDEC {printf (" Declaracion ENDDEC es Zonadec\n"); }
+		| declaracion LC {printf (" Declaracion } es Zonadec\n"); }
 		;
 		
 declaracion:
@@ -184,6 +183,7 @@ write:
 do:
 	DO ID dolist ENDDO { printf("DO ID dolist ENDDO es DO\n"); }
 	;
+	
 dolist:
 	case { printf("case es Dolist\n"); }
 	|dolist default { printf("dolist default es Dolist\n"); }
@@ -195,16 +195,20 @@ case:
 	|CASE comparacion sentencia { printf(" CASE comparacion sentencia es case\n"); }
 	|CASE comparacion LA programa LC { printf(" CASE comparacion LA Programa LC es case\n"); }
 	;
+	
 default:
 	DEFAULT{ printf(" DEFAULT es default\n"); }
 	|DEFAULT sentencia { printf(" DEFAULT sentencia es default\n"); }
 	|DEFAULT LA programa LC { printf(" DEFAULT LA programa LC es default\n"); }
 	;
+	
 repeat:
-	REPEAT ID CORA programa CORC { printf(" REPEAT ID CORA sentencia CORC es repeat\n"); }
-	|REPEAT CTE_E CORA programa CORC { printf(" REPEAT CTE_E CORA sentencia CORC es repeat\n"); }
+	REPEAT CTE_E CORA lista_repeat CORC { printf(" REPEAT CTE_E CORA sentencia CORC es repeat\n"); }
 	;
 
+lista_repeat:
+	lista_repeat sentencia { printf("lista_repeat sentencia es lista_repeat\n"); }
+	|sentencia { printf("sentencia es lista_repeat\n"); }
 
 %%
 

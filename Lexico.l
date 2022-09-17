@@ -40,14 +40,13 @@ CORA			"["
 CORC			"]"
 
 DIGITO			[0-9]
-LETRA			[aA-zZ]
+LETRA			[a-zA-Z]
 SIMBOLO			[:>!]
 A_COMENTARIO	"/*"
 C_COMENTARIO	"*/"
 
 CTE_E	        ("-")*{DIGITO}+
 CTE_R			("-")*{DIGITO}*"."{DIGITO}*
-ID				{LETRA}({LETRA}|{DIGITO}|_)*
 CTE_S 			"\""({LETRA}|{DIGITO}|{SIMBOLO}|.)+"\""
 COMENTARIO		{A_COMENTARIO}({LETRA}|{DIGITO}|.)+{C_COMENTARIO}
 DP				":"
@@ -65,7 +64,7 @@ PARC			")"
 PUNTO			"."
 AND 			"&"
 OR				"||"
-NOT				"NOT"|"not"
+NOT				"not"
 CO_IGUAL		"=="
 CO_DIST			"!="
 CO_MENI			"<="
@@ -85,13 +84,13 @@ CASE			"CASE"
 DEFAULT			"DEFAULT"
 ENDDO			"ENDDO"
 REPEAT			"REPEAT"
-DECVAR			"DECVAR"
-ENDDEC			"ENDDEC"
+INIT			"init"
+ID				{LETRA}({LETRA}|{DIGITO}|_)*
 
 %%
 
-
-
+{CORA}          {printf("\nCorAbre: %s", yytext);return CORA;}
+{CORC}			{printf("\nCorCierra: %s", yytext);return CORC;}
 
 {INT}			{printf("\nP_Reservada_INT: %s", yytext);return INT; }												
 {FLOAT}			{printf("\nP_Reservada_FLOAT: %s", yytext);return FLOAT;}
@@ -106,8 +105,7 @@ ENDDEC			"ENDDEC"
 {DEFAULT}		{printf("\nP_Reservada_DEFAULT: %s", yytext);return DEFAULT;}
 {ENDDO}			{printf("\nP_Reservada_ENDDO: %s", yytext);return ENDDO;}
 {REPEAT}		{printf("\nP_Reservada_REPEAT: %s", yytext);return REPEAT;}
-{DECVAR}			{printf("\nP_Reservada_DECVAR: %s", yytext);return DECVAR;}
-{ENDDEC}		{printf("\nP_Reservada_ENDDEC: %s", yytext);return ENDDEC;}
+{INIT}			{printf("\nP_Reservada_INIT: %s", yytext);return INIT;}
 
 
 {CTE_E}			{printf("\nConstEntera: %s", yytext); guardar_TS("CTE_E", yytext); eval_int(yytext); return CTE_E;} 
@@ -138,10 +136,9 @@ ENDDEC			"ENDDEC"
 {CO_MAYI}		{printf("\nMayIgual: %s", yytext);return CO_MAYI;}
 {CO_MAY}		{printf("\nMayor: %s", yytext);return CO_MAY;}
 
-{CORA}          {printf("\nCorAbre: %s", yytext);return CORA;}
-{CORC}			{printf("\nCorCierra: %s", yytext);return CORC;}
-
 {ID}			{printf("\nIdentificador: %s", yytext); guardar_TS("ID", yytext); return ID;}
+
+
 
 "\n"      		
 "\t"
@@ -154,22 +151,6 @@ ENDDEC			"ENDDEC"
 
 
 %%
-
-/*int main(int argc,char *argv[])
-{
-	
-	if ((yyin = fopen(argv[1], "r")) == NULL)
-	{
-		printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
-	}
-	else
-	{
-		yylex();
-	}
-	
-	fclose(yyin);
-
-}*/
 
 int eval_int( char* n ){
 	int entero = atoi(n);
