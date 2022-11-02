@@ -108,15 +108,15 @@ ID				{LETRA}({LETRA}|{DIGITO}|_)*
 {INIT}			{printf("\nP_Reservada_INIT: %s", yytext);return INIT;}
 
 
-{CTE_E}			{printf("\nConstEntera: %s", yytext); guardar_TS("CTE_E", yytext); eval_int(yytext); return CTE_E;} 
-{CTE_R}			{printf("\nConstReal: %s", yytext); guardar_TS("CTE_R", yytext); eval_float(yytext); return CTE_R;} 
+{CTE_E}			{printf("\nConstEntera: %s", yytext); guardar_TS("CTE_E", yytext); eval_int(yytext); yylval.vals=strdup(yytext); return CTE_E;} 
+{CTE_R}			{printf("\nConstReal: %s", yytext); guardar_TS("CTE_R", yytext); eval_float(yytext); yylval.vals=strdup(yytext); return CTE_R;} 
 
 {CTE_S} 		{printf("\nConstString: %s", yytext); guardar_TS("CTE_S", yytext); eval_string(yytext); return CTE_S;} 
 {COMENTARIO}
 {DP}			{printf("\nDosPuntos: %s", yytext);return DP;}
 {PC}			{printf("\nPuntoComa: %s", yytext);return PC;}
 {OP_SUM}		{printf("\nSuma: %s", yytext);return OP_SUM;}
-{OP_ASIG}		{printf("\nAsignacion: %s", yytext);return OP_ASIG;}
+{OP_ASIG}		{printf("\nAsignacion: %s", yytext);yylval.vals=strdup(yytext);return OP_ASIG;}
 {OP_MUL}		{printf("\nMultiplicacion: %s", yytext);return OP_MUL;}
 {OP_RES}		{printf("\nResta: %s", yytext);return OP_RES;}
 {OP_DIV}		{printf("\nDivision: %s", yytext);return OP_DIV;}
@@ -129,14 +129,14 @@ ID				{LETRA}({LETRA}|{DIGITO}|_)*
 {AND}			{printf("\nAnd: %s", yytext);return AND;}
 {OR}			{printf("\nOr: %s", yytext);return OR;}
 {NOT}			{printf("\nNOT: %s", yytext);return NOT;}
-{CO_IGUAL}		{printf("\nIgual: %s", yytext);return CO_IGUAL;}
-{CO_DIST}		{printf("\nNoIgual: %s", yytext);return CO_DIST;}
-{CO_MENI}		{printf("\nMenIgual: %s", yytext);return CO_MENI;}
-{CO_MEN}		{printf("\nMenor: %s", yytext);return CO_MEN;}
-{CO_MAYI}		{printf("\nMayIgual: %s", yytext);return CO_MAYI;}
-{CO_MAY}		{printf("\nMayor: %s", yytext);return CO_MAY;}
+{CO_IGUAL}		{printf("\nIgual: %s", yytext); yylval.vals=strdup(yytext); return CO_IGUAL;}
+{CO_DIST}		{printf("\nNoIgual: %s", yytext); yylval.vals=strdup(yytext); return CO_DIST;}
+{CO_MENI}		{printf("\nMenIgual: %s", yytext); yylval.vals=strdup(yytext); return CO_MENI;}
+{CO_MEN}		{printf("\nMenor: %s", yytext); yylval.vals=strdup(yytext); return CO_MEN;}
+{CO_MAYI}		{printf("\nMayIgual: %s", yytext); yylval.vals=strdup(yytext); return CO_MAYI;}
+{CO_MAY}		{printf("\nMayor: %s", yytext); yylval.vals=strdup(yytext); return CO_MAY;}
 
-{ID}			{printf("\nIdentificador: %s", yytext); guardar_TS("ID", yytext); return ID;}
+{ID}			{printf("\nIdentificador: %s", yytext); guardar_TS("ID", yytext); yylval.vals=strdup(yytext); return ID;}
 
 
 
