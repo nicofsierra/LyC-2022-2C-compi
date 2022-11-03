@@ -46,7 +46,7 @@ R2                              |	ID             |	                             
 
 12                              |	CTE_E          |	                                |	0            
 
-101                             |	CTE_E          |	                                |	0            
+1012                            |	CTE_E          |	                                |	0            
 
 "es 1012"                       |	CTE_S          |	                                |	9            
 
@@ -55,6 +55,10 @@ R2                              |	ID             |	                             
 "es mayor a 202"                |	CTE_S          |	                                |	16           
 
 "ninguna de las anteriores"     |	CTE_S          |	                                |	27           
+
+1016                            |	CTE_E          |	                                |	0            
+
+"es 1016"                       |	CTE_S          |	                                |	9            
 
 "ES UN SIETE?"                  |	CTE_S          |	                                |	14           
 
