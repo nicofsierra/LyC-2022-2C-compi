@@ -63,10 +63,10 @@
 62 - 3
 63 - C
 64 - =
-65 - =
+65 - "HOLA"
 66 - G
 67 - =
-68 - =
+68 - "HOLA TODO BIEN!"
 69 - F
 70 - =
 71 - 12
@@ -85,19 +85,55 @@
 84 - =
 85 - BI
 86 - 74
-87 - variable1
-88 - 101
-89 - variable1
-90 - 202
-91 - variable1
-92 - 101
-93 - variable1
-94 - 202
-95 - ET
-96 - CMP
-97 - $CONT_REPEAT
-98 - 0
-99 - BLE
-100 - 103
-101 - BI
-102 - 95
+87 - ET
+88 - variable1
+89 - 1012
+90 - CMP
+91 - BNE
+92 - 95
+93 - write
+94 - "es 1012"
+95 - variable1
+96 - 202
+97 - CMP
+98 - BLE
+99 - 102
+100 - write
+101 - "es mayor a 202"
+102 - write
+103 - "ninguna de las anteriores"
+104 - ET
+105 - variable1
+106 - 1016
+107 - CMP
+108 - BNE
+109 - 112
+110 - write
+111 - "es 1016"
+112 - variable1
+113 - 202
+114 - CMP
+115 - BLE
+116 - 119
+117 - write
+118 - "es mayor a 202"
+119 - write
+120 - A
+121 - ET
+122 - CMP
+123 - $CONT_REPEAT
+124 - 0
+125 - BLE
+126 - 133
+127 - read
+128 - C
+129 - write
+130 - C
+131 - BI
+132 - 121
+133 - read
+134 - F
+135 - write
+136 - F
+137 - write
+138 - "ES UN SIETE?"

@@ -88,6 +88,7 @@ typedef t_nodoPila *t_pila;
 t_pila pilaIf;
 t_pila pilaWhile;
 t_pila pilaRepeat;
+t_pila pilaDo;
 
 /* funciones */
 void guardarPolaca(t_polaca*);
@@ -105,6 +106,7 @@ t_info* topeDePila(t_pila*);
 int contadorIf=0;
 int contadorWhile=0;
 int contadorRepeat=0;
+int contadorDo=0;
 enum tipoCondicion tipoCondicion;
 
 /* variables globales */
@@ -481,31 +483,74 @@ constante_string:
 		;
 		
 read:
-		READ PARA CTE_S PARC { printf("READ CTE_S es Read\n"); }
-		| READ PARA CTE_E PARC {printf(" READ CTE_E es Read\n"); }
-		| READ PARA ID PARC {printf(" READ ID es Read\n"); }
-		| READ PARA CTE_R PARC {printf(" READ CTE_R es Read\n"); }
+		READ PARA CTE_S PARC { ponerEnPolaca(&polaca,$<vals>1); ponerEnPolaca(&polaca,$<vals>3); }
+		| READ PARA CTE_E PARC {ponerEnPolaca(&polaca,$<vals>1); ponerEnPolaca(&polaca,$<vals>3);}
+		| READ PARA ID PARC {ponerEnPolaca(&polaca,$<vals>1); ponerEnPolaca(&polaca,$<vals>3); }
+		| READ PARA CTE_R PARC {ponerEnPolaca(&polaca,$<vals>1); ponerEnPolaca(&polaca,$<vals>3); }
 		;
 write:
-		WRITE PARA CTE_S PARC { printf("WRITE CTE_S es Write\n"); }
-		| WRITE PARA CTE_E PARC {printf(" WRITE CTE_E es Write\n"); }
-		| WRITE PARA ID PARC {printf(" WRITE ID es Write\n"); }
-		| WRITE PARA CTE_R PARC {printf(" WRITE CTE_R es Write\n"); }
+		WRITE PARA CTE_S PARC { ponerEnPolaca(&polaca,$<vals>1); ponerEnPolaca(&polaca,$<vals>3); }
+		| WRITE PARA CTE_E PARC {ponerEnPolaca(&polaca,$<vals>1); ponerEnPolaca(&polaca,$<vals>3); }
+		| WRITE PARA ID PARC {ponerEnPolaca(&polaca,$<vals>1); ponerEnPolaca(&polaca,$<vals>3);}
+		| WRITE PARA CTE_R PARC {ponerEnPolaca(&polaca,$<vals>1); ponerEnPolaca(&polaca,$<vals>3);}
 		;
 do:
-	DO ID dolist ENDDO { printf("DO ID dolist ENDDO es DO\n"); }
+	DO	
+	{
+			t_info info;
+			info.nro=contadorDo++;
+			ponerEnPila(&pilaDo,&info);
+			ponerEnPolaca(&polaca,"ET");
+			
+	} 
+	ID dolist ENDDO	
+	{
+		sacarDePila(&pilaDo);
+	}  { printf("DO ID dolist ENDDO es DO\n"); }
 	;
 	
 dolist:
-	case { printf("case es Dolist\n"); }
+	case	 { printf("case es Dolist\n"); }
 	|dolist default { printf("dolist default es Dolist\n"); }
 	|dolist case { printf("dolist case es Dolist\n"); }
 	;
 	
 case:
-	CASE comparacion { printf(" CASE comparacion es case\n"); }
-	|CASE comparacion sentencia { printf(" CASE comparacion sentencia es case\n"); }
-	|CASE comparacion LA programa LC { printf(" CASE comparacion LA Programa LC es case\n"); }
+	CASE comparacion	
+	{
+			ponerEnPolaca(&polaca,"CMP");
+			ponerEnPolaca(&polaca,obtenerSalto(inverso));
+			char aux[20];
+			sprintf(aux, "%d", contadorPolaca+1);
+			ponerEnPolaca(&polaca,aux);
+			
+	} { printf(" CASE comparacion es case\n"); }
+	|CASE comparacion	
+		{
+				ponerEnPolaca(&polaca,"CMP");
+				ponerEnPolaca(&polaca,obtenerSalto(inverso));
+				topeDePila(&pilaDo)->salto1=contadorPolaca;
+				ponerEnPolaca(&polaca,"");
+		}
+	sentencia 
+		{ 
+			char aux[20];
+			sprintf(aux, "%d", contadorPolaca);
+			ponerEnPolacaNro(&polaca, topeDePila(&pilaDo)->salto1, aux); 
+		} { printf(" CASE comparacion sentencia es case\n"); }
+	|CASE comparacion 		
+			{
+					ponerEnPolaca(&polaca,"CMP");
+					ponerEnPolaca(&polaca,obtenerSalto(inverso));
+					topeDePila(&pilaDo)->salto1=contadorPolaca;
+					ponerEnPolaca(&polaca,"");
+			}
+		LA programa LC 
+			{ 
+				char aux[20];
+				sprintf(aux, "%d", contadorPolaca);
+				ponerEnPolacaNro(&polaca, topeDePila(&pilaDo)->salto1, aux); 
+			} { printf(" CASE comparacion LA Programa LC es case\n"); }
 	;
 	
 default:
@@ -722,6 +767,7 @@ int main(int argc, char *argv[])
 	crearPila(&pilaIf);
 	crearPila(&pilaWhile);
 	crearPila(&pilaRepeat);
+	crearPila(&pilaDo);
 	crearPolaca(&polaca);
     if((yyin = fopen(argv[1], "rt"))==NULL)
     {
