@@ -61,4 +61,3 @@ R2                              |	ID             |	                             
 "es 1016"                       |	CTE_S          |	                                |	9            
 
 "ES UN SIETE?"                  |	CTE_S          |	                                |	14           
-
