@@ -98,8 +98,8 @@ ID				{LETRA}({LETRA}|{DIGITO}|_)*
 {IF}			{printf("\nP_Reservada_IF: %s", yytext);return IF;}
 {ELSE}			{printf("\nP_Reservada_ELSE: %s", yytext);return ELSE;}
 {WHILE}			{printf("\nP_Reservada_WHILE: %s", yytext);return WHILE;}
-{READ}			{printf("\nP_Reservada_READ: %s", yytext);return READ;}
-{WRITE}			{printf("\nP_Reservada_WRITE: %s", yytext);return WRITE;}
+{READ}			{printf("\nP_Reservada_READ: %s", yytext);yylval.vals=strdup(yytext); return READ;}
+{WRITE}			{printf("\nP_Reservada_WRITE: %s", yytext);yylval.vals=strdup(yytext); return WRITE;}
 {DO}			{printf("\nP_Reservada_DO: %s", yytext);return DO;}
 {CASE}			{printf("\nP_Reservada_CASE: %s", yytext);return CASE;}	
 {DEFAULT}		{printf("\nP_Reservada_DEFAULT: %s", yytext);return DEFAULT;}
@@ -111,7 +111,7 @@ ID				{LETRA}({LETRA}|{DIGITO}|_)*
 {CTE_E}			{printf("\nConstEntera: %s", yytext); guardar_TS("CTE_E", yytext); eval_int(yytext); yylval.vals=strdup(yytext); return CTE_E;} 
 {CTE_R}			{printf("\nConstReal: %s", yytext); guardar_TS("CTE_R", yytext); eval_float(yytext); yylval.vals=strdup(yytext); return CTE_R;} 
 
-{CTE_S} 		{printf("\nConstString: %s", yytext); guardar_TS("CTE_S", yytext); eval_string(yytext); return CTE_S;} 
+{CTE_S} 		{printf("\nConstString: %s", yytext); guardar_TS("CTE_S", yytext); eval_string(yytext); yylval.vals=strdup(yytext); return CTE_S;} 
 {COMENTARIO}
 {DP}			{printf("\nDosPuntos: %s", yytext);return DP;}
 {PC}			{printf("\nPuntoComa: %s", yytext);return PC;}

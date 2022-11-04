@@ -74,6 +74,8 @@ CASE variable1>202
 write("es mayor a 202")
 ENDDO
 
+write(A)
+
 REPEAT 9 [read(C) write(C)]
 
 /*ERRORES DEL LEXICO*/
